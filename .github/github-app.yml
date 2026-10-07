@@ -5,9 +5,6 @@ instructions: |
 scripts:
   - name: Setup
     command: npm ci
-    triggers:
-      - session.create
-
   - name: Run
     command: npm run dev
 
