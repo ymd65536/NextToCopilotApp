@@ -5,6 +5,7 @@ instructions: |
 scripts:
   - name: Setup
     command: npm ci
+
   - name: Run
     command: npm run dev
 
