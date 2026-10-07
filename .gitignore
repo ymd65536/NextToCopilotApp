@@ -1,13 +1,6 @@
-# envrionment
-.env
-
-# python
-.pyc
-__pycache__
-bin
-lib
-lib64
-include
-
-# macOS
-.DS_Store
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env*

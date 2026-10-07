@@ -1,0 +1,33 @@
+# Google Cloud Run向けの最小構成Dockerfile
+# Next.jsのoutput: "standalone"を利用してランタイムイメージを小さくする
+
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+# Cloud RunはPORT環境変数を渡す。Next.jsのstandaloneサーバーはPORTを参照する
+ENV PORT=8080
+ENV HOSTNAME=0.0.0.0
+EXPOSE 8080
+
+CMD ["node", "server.js"]
