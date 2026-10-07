@@ -1,26 +1,15 @@
-# GitHub Copilot App configuration
-# Copilot Appのセッション開始時に依存関係をインストールし、
-# Next.jsの開発サーバーを起動してintegrated browserで自動的に開く
+instructions: |
+  This repository contains a Next.js application.
+  Use npm for package management.
 
-name: NextToCopilotApp
+scripts:
+  - name: Setup
+    command: npm ci
+    triggers:
+      - session.create
 
-# リポジトリ作成時・セッション開始時のセットアップ
-setup:
-  steps:
-    - name: Install dependencies
-      run: npm ci
+  - name: Run
+    command: npm run dev
 
-# 開発サーバーの起動設定
-start:
-  command: npm run dev
-  # Next.jsのdevサーバーが待ち受けるポート
-  port: 3000
-  # サーバー起動完了の検出（Next.jsが標準出力に出すURL/Readyメッセージ）
-  readiness:
-    type: log
-    pattern: "Local:\\s+http://localhost:(\\d+)"
-
-# integrated browserの自動起動設定
-browser:
-  autoOpen: true
-  url: http://localhost:3000
+server_ready_pattern: '(?i)Local:\s+(https?://\S+)'
+auto_open_in_browser: true
